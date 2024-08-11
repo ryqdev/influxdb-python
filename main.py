@@ -11,7 +11,7 @@ TOKEN = os.environ.get("INFLUX_TOKEN")
 ORG = os.environ.get("INFLUX_ORG")
 HOST = os.environ.get("INFLUX_URL")
 BUCKET = os.environ.get("INFLUX_BUCKET")
-SYMBOL = "OXY"
+SYMBOL = "AAPL"
 
 
 def init_client() -> InfluxDBClient3:
@@ -23,7 +23,11 @@ def influx_write(client: InfluxDBClient3) -> NoReturn:
     point = (
       Point(SYMBOL)
       .tag("Time", index)
+      .field("Open", row["Open"])
+      .field("High", row["High"])
+      .field("Low", row["Low"])
       .field("Close", row["Close"])
+      .field("Volume", row["Volume"])
     )
     client.write(database=BUCKET, record=point)
   logger.info("Complete. Return to the InfluxDB UI.")
